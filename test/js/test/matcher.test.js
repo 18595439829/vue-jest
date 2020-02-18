@@ -343,14 +343,131 @@ Jest Platform
 //--------------------------------------------------------------
 
 
-const prettyFormat = require('pretty-format');
+// const prettyFormat = require('pretty-format');
 
-const val = {object: {}};
-val.circularReference = val;
-val[Symbol('foo')] = 'foo';
-val.map = new Map([['prop', 'value']]);
-val.array = [-0, Infinity, NaN];
+// const val = {object: {}};
+// val.circularReference = val;
+// val[Symbol('foo')] = 'foo';
+// val.map = new Map([['prop', 'value']]);
+// val.array = [-0, Infinity, NaN];
 
-test('测试format', () => {
-  console.log(prettyFormat(val));
-})
+// test('测试format', () => {
+//   console.log(prettyFormat(val));
+// })
+
+
+/*
+snapshot
+*/
+
+// const HelloWorld = require('../../../src/components/HelloWorld.vue')
+
+// describe('TodoItem snapshot test', () => {
+//   test('first render', () => {
+//       const wrapper = shallowMount(HelloWorld.toJSON(), {
+//           propsData: {
+//               item: {
+//                   finished: true,
+//                   content: 'test TodoItem'
+//               }
+//           }
+//       })
+//       expect(wrapper.html()).toMatchSnapshot()
+//   })
+
+//   test('toggle checked', () => {
+//       const renderer = createRenderer();
+//       const wrapper = shallowMount(TodoItem, {
+//           propsData: {
+//               item: {
+//                   finished: true,
+//                   content: 'test TodoItem'
+//               }
+//           }
+//       })
+//       const checkbox = wrapper.find('input');
+//       checkbox.trigger('click');
+//       renderer.renderToString(wrapper.vm, (err, str) => {
+//           expect(str).toMatchSnapshot()
+//       })
+//   })
+  
+//   test('mouseover', () => {
+//       const renderer = createRenderer();
+//       const wrapper = shallowMount(TodoItem, {
+//           propsData: {
+//               item: {
+//                   finished: false,
+//                   content: 'test TodoItem'
+//               }
+//           }
+//       })
+//       wrapper.trigger('mouseover');
+//       renderer.renderToString(wrapper.vm, (err, str) => {
+//           expect(str).toMatchSnapshot()
+//       })
+//   })
+// })
+
+/*
+Timer  Mocks
+*/
+
+// jest.useFakeTimers();
+
+// test('waits 1 second before ending the game', () => {
+//   const timerGame = require('../code/timeGame.js');
+//   timerGame();
+//   expect(setTimeout).toHaveBeenCalledTimes(1);
+//   expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+// });
+
+// test('calls the callback after 1 second', () => {
+//     const timerGame = require('../code/timeGame.js');
+//     const callback = jest.fn();
+  
+//     timerGame(callback);
+  
+//     // 在这个时间点，定时器的回调不应该被执行
+//     expect(callback).not.toBeCalled();
+//     console.log('定时器的回调不应该被执行')
+
+//     // “快进”时间使得所有定时器回调被执行
+//     jest.runAllTimers();
+//     console.log('“快进”时间使得所有定时器回调被执行')
+
+//     // 现在回调函数应该被调用了！
+//     expect(callback).toBeCalled();
+//     expect(callback).toHaveBeenCalledTimes(1);
+//     console.log('现在回调函数应该被调用了！')
+//   });
+
+  //------------------------------------------------------
+
+jest.useFakeTimers();
+
+describe('infiniteTimerGame', () => {
+  test('schedules a 10-second timer after 1 second', () => {
+    const infiniteTimerGame = require('../code/infiniteTimerGame.js');
+    const callback = jest.fn();
+    console.log(callback);
+    infiniteTimerGame(callback);
+
+    // At this point in time, there should have been a single call to
+    // setTimeout to schedule the end of the game in 1 second.
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+
+    // Fast forward and exhaust only currently pending timers
+    // (but not any new timers that get created during that process)
+    jest.runOnlyPendingTimers();
+
+    // At this point, our 1-second timer should have fired it's callback
+    expect(callback).toBeCalled();
+
+    // And it should have created a new timer to start the game over in
+    // 10 seconds
+    expect(setTimeout).toHaveBeenCalledTimes(2);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
+  });
+});
