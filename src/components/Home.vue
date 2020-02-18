@@ -16,9 +16,14 @@ export default {
         return {
             menus:[
                 {
-                    path: '/Index',
-                    name: 'Index',
-                    label: '主页'
+                    path: '/Ball',
+                    name: 'Ball',
+                    label: '查看球队'
+                },
+                {
+                    path: '/AddBall',
+                    name: 'AddBall',
+                    label: '添加球队'
                 }
             ]
         }
