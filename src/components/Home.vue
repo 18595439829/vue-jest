@@ -1,6 +1,5 @@
 <template>
   <div :class="$style['container']">
-      Home
       <Menu :menus="menus" />
   </div>
 </template>
@@ -20,11 +19,11 @@ export default {
                     name: 'Ball',
                     label: '查看球队'
                 },
-                {
-                    path: '/AddBall',
-                    name: 'AddBall',
-                    label: '添加球队'
-                }
+                // {
+                //     path: '/AddBall',
+                //     name: 'AddBall',
+                //     label: '添加球队'
+                // }
             ]
         }
     }

@@ -11,21 +11,31 @@
       </FormItem>
       <FormItem label="时间">
         <DatePicker
-          type="date"
+          type="datetime"
           placeholder="Select date"
           v-model="formItem.time"
         ></DatePicker>
       </FormItem>
-      <FormItem>
-        <Button @click="add">确定</Button>
+      <FormItem :class="$style['buttons']">
+        <Button @click="cancel" :class="$style['cancel']">取消</Button>
+        <Button @click="add" type="primary">确定</Button>
       </FormItem>
     </Form>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "AddBall",
+  props: {
+    data: {
+      type: Object,
+      required: false,
+      default: undefined,
+    }
+  },
   data() {
     return {
       formItem: {
@@ -34,19 +44,38 @@ export default {
       }
     };
   },
+  watch: {
+    data(v) {
+      this.formItem = {...v};
+    }
+  },
   methods: {
-    add() {
+    add () {
       if (this.formItem.content) {
-        let arr = localStorage.getItem("ball")
-          ? JSON.parse(localStorage.getItem("ball"))
-          : [];
-        arr.push(this.formItem);
-        localStorage.setItem("ball", JSON.stringify(arr));
-        this.$Message.success({
-          content: "添加成功",
-          duration: 10,
-          closable: true
-        });
+        if (this.formItem.id) {
+          axios.post('/update', this.formItem).then(res => {
+            // eslint-disable-next-line no-console
+            console.log(res);
+            this.$Message.success({
+              content: "修改成功",
+              duration: 3,
+              closable: true
+            });
+            this.$emit('on-ok', false)
+          });
+        } else {
+          axios.post('/add', this.formItem).then(res => {
+            // eslint-disable-next-line no-console
+            console.log(res);
+            this.$Message.success({
+              content: "新增成功",
+              duration: 3,
+              closable: true
+            });
+            this.$emit('on-ok', false)
+          });
+        }
+        
       } else {
         this.$Message.error({
           content: "内容为空,无法添加",
@@ -54,12 +83,20 @@ export default {
           closable: true
         });
       }
+    },
+    cancel() {
+      this.$emit('on-cancel', false)
     }
   }
 };
 </script>
-
-<style module>
+<style lang="scss" module>
 .container {
+  .buttons {
+    text-align: right;
+    .cancel {
+      margin-right: 10px;
+    }
+  }
 }
 </style>
