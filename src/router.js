@@ -9,8 +9,17 @@ const Router = new VueRouter({
     routes: [
         {
             path: '/',
-            name: 'Home',
-            component: () => import ('@/components/Home.vue'),
+            redirect: '/Ball'
+        },
+        {
+            path: '/Ball',
+            name: 'Ball',
+            component: () => import ('@/views/Ball.vue'),
+        },
+        {
+            path: '/AddBall',
+            name: 'AddBall',
+            component: () => import ('@/views/AddBall.vue'),
         }
     ]
 })
