@@ -27,12 +27,14 @@ app.get('/search', (req, res) => {
     res.send({
       data: result,
     });
+    connection.release();//释放链接
   }); 
 })
 
 app.post("/add", (req, res) => {
   insertSQL(connection, req.body).then(() => {
     res.send('添加成功');
+    connection.release();//释放链接
   });
 });
 
@@ -46,12 +48,14 @@ app.post("/update", (req, res) => {
   let data = { content, time, id };
   updateSQL(connection, data).then(() => {
     res.send("修改成功");
+    connection.release();//释放链接
   });
 });
 
 app.get("/delete", (req, res) => {
   deleteSQL(connection, req.query.id).then(() => {
     res.send("删除成功");
+    connection.release();//释放链接
   });
 });
 
