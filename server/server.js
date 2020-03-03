@@ -1,8 +1,10 @@
 let express = require("express");
 let bodyParser = require("body-parser");
+var morgan = require('morgan');
 let app = new express();
 let format = require("date-fns/format/index.js");
 
+app.use(morgan('short'));
 app.use(bodyParser.json()); 
 
 let mysql = require("mysql");
@@ -17,7 +19,8 @@ let connection = mysql.createConnection({
   user: "root",
   password: "123456",
   port: "3306",
-  database: "ball"
+  database: "ball",
+  connectionLimit: 0,
 });
 
 connection.connect();
@@ -27,14 +30,15 @@ app.get('/search', (req, res) => {
     res.send({
       data: result,
     });
-    connection.release();//释放链接
+    res.end();
+    // connection.release();//释放链接
   }); 
 })
 
 app.post("/add", (req, res) => {
   insertSQL(connection, req.body).then(() => {
     res.send('添加成功');
-    connection.release();//释放链接
+    res.end();
   });
 });
 
@@ -48,14 +52,14 @@ app.post("/update", (req, res) => {
   let data = { content, time, id };
   updateSQL(connection, data).then(() => {
     res.send("修改成功");
-    connection.release();//释放链接
+    res.end();
   });
 });
 
 app.get("/delete", (req, res) => {
   deleteSQL(connection, req.query.id).then(() => {
     res.send("删除成功");
-    connection.release();//释放链接
+    res.end();
   });
 });
 
