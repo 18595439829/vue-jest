@@ -41,7 +41,7 @@ export default {
       modal: false,
       pageNum: 1,
       pageSize: 10,
-      total: 100,
+      total: 0,
       formData: {},
       columns: [
         {
@@ -76,6 +76,7 @@ export default {
           pageSize: this.pageSize,
         }
       }).then(res => {
+        this.total = res.data.total;
         this.data = res.data.data.map((item, index) => {
           item.no = index + 1
           item.time = format(new Date(item.time), "yyyy-MM-dd HH:mm:ss")
